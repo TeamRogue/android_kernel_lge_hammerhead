@@ -351,11 +351,25 @@ CC		= $(srctree)/scripts/gcc-wrapper.py $(REAL_CC)
 
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
-CFLAGS_MODULE   =
-AFLAGS_MODULE   =
+
+ARM_FLAGS	= -march=armv7-a \
+		  -mfpu=neon-vfpv4 \
+		  -ftree-vectorize \
+		  -fvect-cost-model \
+		  -fgcse-after-reload \
+		  -fipa-cp-clone \
+		  -fpredictive-commoning \
+		  -fsched-spec-load \
+		  -funswitch-loops \
+		  -fmodulo-sched \
+		  -fmodulo-sched-allow-regmoves \
+		  -fomit-frame-pointer
+
+CFLAGS_MODULE   = $(ARM_FLAGS) -DMODULE
+AFLAGS_MODULE   = $(ARM_FLAGS) -DMODULE
 LDFLAGS_MODULE  =
-CFLAGS_KERNEL	=
-AFLAGS_KERNEL	=
+CFLAGS_KERNEL	= $(ARM_FLAGS)
+AFLAGS_KERNEL	= $(ARM_FLAGS)
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
 
