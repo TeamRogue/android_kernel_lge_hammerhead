@@ -362,8 +362,7 @@ ARM_FLAGS	= -march=armv7-a \
 		  -fsched-spec-load \
 		  -funswitch-loops \
 		  -fmodulo-sched \
-		  -fmodulo-sched-allow-regmoves \
-		  -fomit-frame-pointer
+		  -fmodulo-sched-allow-regmoves
 
 CFLAGS_MODULE   = $(ARM_FLAGS) -DMODULE
 AFLAGS_MODULE   = $(ARM_FLAGS) -DMODULE
@@ -579,7 +578,7 @@ all: vmlinux
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
 else
-KBUILD_CFLAGS	+= -O2
+KBUILD_CFLAGS	+= -O2 $(call cc-disable-warning,maybe-uninitialized,)
 endif
 
 include $(srctree)/arch/$(SRCARCH)/Makefile
