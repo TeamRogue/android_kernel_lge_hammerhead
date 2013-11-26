@@ -513,15 +513,18 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	/* check if auxiliary CPU is needed based on avg_load */
 	if (avg_load > dbs_tuners_ins.up_threshold) {
 		/* should we enable auxillary CPUs? */
-		if (num_online_cpus() < 2 && hotplug_in_avg_load >
-				dbs_tuners_ins.up_threshold) {
+		if (hotplug_in_avg_load > dbs_tuners_ins.up_threshold) {
 			/* hotplug with cpufreq is nasty
 			 * a call to cpufreq_governor_dbs may cause a lockup.
 			 * wq is not running here so its safe.
 			 */
-			mutex_unlock(&this_dbs_info->timer_mutex);
-			cpu_up(1);
-			mutex_lock(&this_dbs_info->timer_mutex);
+			if (num_online_cpus() < 4) {
+				mutex_unlock(&this_dbs_info->timer_mutex);
+				cpu_up(1);
+				cpu_up(2);
+				cpu_up(3);
+				mutex_lock(&this_dbs_info->timer_mutex);
+			}
 			goto out;
 		}
 	}
@@ -541,11 +544,14 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		/* are we at the minimum frequency already? */
 		if (policy->cur == policy->min) {
 			/* should we disable auxillary CPUs? */
-			if (num_online_cpus() > 1 && hotplug_out_avg_load <
-					dbs_tuners_ins.down_threshold) {
-				mutex_unlock(&this_dbs_info->timer_mutex);
-				cpu_down(1);
-				mutex_lock(&this_dbs_info->timer_mutex);
+			if (hotplug_out_avg_load < dbs_tuners_ins.down_threshold) {
+				if (num_online_cpus() > 1) {
+					mutex_unlock(&this_dbs_info->timer_mutex);
+					cpu_down(3);
+					cpu_down(2);
+					cpu_down(1);
+					mutex_lock(&this_dbs_info->timer_mutex);
+				}
 			}
 			goto out;
 		}
