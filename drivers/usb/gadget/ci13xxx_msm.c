@@ -358,6 +358,12 @@ void msm_hw_bam_disable(bool bam_disable)
 	writel_relaxed(val, USB_GENCONFIG);
 }
 
+static const struct of_device_id ci13xx_msm_dt_match[] = {
+	{ .compatible = "qcom,ci13xxx_msm",
+	},
+	{}
+};
+
 static struct platform_driver ci13xxx_msm_driver = {
 	.probe = ci13xxx_msm_probe,
 	.driver = {

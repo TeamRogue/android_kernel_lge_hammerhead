@@ -64,7 +64,7 @@
 
 		adsp_mem: adsp_region {
 			linux,contiguous-region;
-			reg = <0 0x2000000>;
+			reg = <0 0x3F00000>;
 			label = "adsp_mem";
 		};
 
@@ -206,7 +206,7 @@
 	qcom,vidc {
 		compatible = "qcom,msm-vidc";
 		qcom,hfi = "q6";
-		qcom,max-hw-load = <108000>; /* 720p @ 30 */
+		qcom,max-hw-load = <243000>; /* 1080p @ 30 */
 	};
 
 	qcom,wfd {
@@ -1349,8 +1349,6 @@
 		compatible = "qcom,cache_dump";
 		qcom,l1-dump-size = <0x100000>;
 		qcom,l2-dump-size = <0x500000>;
-		qcom,memory-reservation-type = "EBI1";
-		qcom,memory-reservation-size = <0x600000>; /* 6M EBI1 buffer */
 	};
 
 	tsens: tsens@fc4a8000 {
@@ -1636,17 +1634,11 @@
 
 &gdsc_venus {
 	qcom,clock-names = "core_clk";
-	qcom,skip-logic-collapse;
-	qcom,retain-periph;
-	qcom,retain-mem;
 	status = "ok";
 };
 
 &gdsc_mdss {
 	qcom,clock-names = "core_clk", "lut_clk";
-	qcom,skip-logic-collapse;
-	qcom,retain-periph;
-	qcom,retain-mem;
 	status = "ok";
 };
 
@@ -1663,8 +1655,6 @@
 
 &gdsc_oxili_gx {
 	qcom,clock-names = "core_clk";
-	qcom,retain-mem;
-	qcom,retain-periph;
 	status = "ok";
 };
 
